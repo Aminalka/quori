@@ -6,7 +6,7 @@
 
     <ul>
         {% for question in questions %}
-        <li class="block d-flex flex-row mb-20">
+        <a href="{{path('show_question', {id:question.id})}}" class="block d-flex flex-row mb-20">
             <div class="d-flex flex-column mr-20 align-items-center">
                 <i class="fa-solid fa-arrow-up {{question.rating > 0 ? 'rating-up' : ''}}"></i>
                 <p {% if question.rating > 0 %}
@@ -15,7 +15,6 @@
                     class="rating-down"
                 {% endif %}>{{ question.rating}}</p>
                 <i class="fa-solid fa-arrow-down {{question.rating < 0 ? 'rating-down' : ''}}"></i>
-
             </div>
             <div class="flex-fill d-flex flex-column">
                 <div class="mb-20 question-content pb-20">
@@ -35,7 +34,7 @@
 
                 </div>
             </div>
-        </li>
+        </a>
             
         {% endfor %}
     </ul>
