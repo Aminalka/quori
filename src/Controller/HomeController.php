@@ -12,9 +12,10 @@ class HomeController extends AbstractController
     public function index(): Response
     {
 
+
         $questions = [
             [
-                'id' => 1,
+                'id' => 2 ,
                 'title'=> 'je suis une question',
                 'content'=> 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officiis, quis odit! Odit earum quisquam ea animi in qui sit quia. Consequatur illum voluptas quidem, sed et                        numquam neque aspernatur quibusdam.',
                 'rating'=> 0,
