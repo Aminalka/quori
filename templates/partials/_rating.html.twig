@@ -3,9 +3,9 @@
         <i class="fa-regular fa-thumbs-up {{rating > 0 ? 'rating-up' : ''}}"></i>
 
     </a>
-    <p {% if question.rating > 0 %}
+    <p {% if rating > 0 %}
         class="rating-up"
-    {% elseif question.rating < 0 %}
+    {% elseif rating < 0 %}
         class="rating-down"
     {% endif %}>{{ rating}}</p>
     <a href="{{ path(from ~ '_rating', {id: id, score: -1}) }}">

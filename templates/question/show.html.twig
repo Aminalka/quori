@@ -36,15 +36,15 @@
         {% for comment in question.comments %}
         <div class="question-response-elem d-flex flex-row-nowrap mn-20">
                 {% include "./partials/_rating.html.twig"  with {rating:comment.rating, from:'comment', id: comment.id} %}
-                <div class="d-flex flex-column">
-                    <div class="d-flex  flex-row-nowrap align-items-center pb-10">
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex flex-row-nowrap align-items-center pb-10 ">
                         <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="avatar" class="avatar-small mr-10">
     
                         <p class="clickable">Roberta Carlson</p>
-                        <span class="ml-auto">{{ comment.createdAt | format_datetime(pattern='d MMMM y', locale='fr') }}</span>
+                        <span class="ml-auto">{{ comment.createdAt | ago(locale= 'fr') }}</span>
                     </div>
+                    <p class="question-response-text">{{ comment.content }}</p>
                 </div>
-                <p class="question-response-text">{{ comment.content }}</p>
             </div>
             
         {% endfor %}
