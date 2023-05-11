@@ -3,8 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -20,13 +25,37 @@ class UserController extends AbstractController
         if ($currentUser === $user ) {
             return $this->redirectToRoute('current_user_profile');
         }
-        return $this->render('user/profile.html.twig');
+        return $this->render('user/show.html.twig');
     }
 
     #[Route('/user', name: 'current_user_profile')]
     #[IsGranted("IS_AUTHENTICATED_FULLY")]
-    public function currentUserProfile(): Response
+    public function currentUserProfile(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): Response
     {
-        return $this->render('user/profile.html.twig');
+        /**
+         * @var User
+         */
+        $currentUser = $this->getUser();
+        $profileForm = $this->createForm(UserType::class, $currentUser);
+        $profileForm->remove('password');
+        $profileForm->add('newPassword',PasswordType::class,['label'=>'nouveau mot de passe', 'required' => false]);
+
+        $profileForm->handleRequest($request);
+
+        if ($profileForm->isSubmitted() && $profileForm->isValid()) {
+            // mise a jour les informations de l'utilisateur
+            $newPassword = $currentUser->getNewPassword();
+            if($newPassword){
+                $hashedNewPassword = $passwordHasher->hashPassword($currentUser, $newPassword);
+                $currentUser->setPassword($hashedNewPassword);
+            }
+
+            $em->flush();
+            $this->addFlash('success', 'Modification des informations sauvegardées');
+        }
+        return $this->render('user/show.html.twig',[
+            'form'=>$profileForm->createView()
+
+        ]);
     }
 }

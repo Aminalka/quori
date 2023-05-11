@@ -53,6 +53,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Comment::class)]
     private Collection $comments;
 
+    #[Assert\Length(min: 6, minMessage: "le mot de passe doit faire au minimum 6 caractères")]
+    private ?string $newPassword = null;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -116,6 +119,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+     /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getNewPassword(): ?string
+    {
+        return $this->newPassword;
+    }
+
+    public function setNewPassword(string $password): self
+    {
+        $this->newPassword = $password;
 
         return $this;
     }
