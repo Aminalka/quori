@@ -11,6 +11,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserController extends AbstractController
 {
     #[Route('/user/{id}', name: 'profile_user')]
+    #[IsGranted("IS_AUTHENTICATED_FULLY")]
+
     public function userProfile(User $user): Response
 
     {
