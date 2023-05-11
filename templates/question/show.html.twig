@@ -18,35 +18,45 @@
 
             <h3>{{ question.title }}</h3>
             <div class="question-tag">QUESTION</div>
-            <img src="https://randomuser.me/api/portraits/women/79.jpg" alt="Avatar" class="avatar ml-auto">
+            <a href="{{ path('profile_user',{id:question.author.id}) }}">
+                <img src="{{question.author.image}}" alt="Avatar" class="avatar ml-auto">
+            </a>
         </div>
         <p class="question-text">{{ question.content }}</p>
-        <div class="separator"></div>
-        <div class="pb-20">
-            <h4>Nombre de réponses : {{ question.nbResponse }}</h4>
-        </div>
-        <h3 class="pb-20">Votre réponse: </h3>
-        <div class="comment-form">
-            {{ form_start(form) }}
-                {{ form_rest(form) }}
-                <button class="btn btn-primary m-10">Soumettre</button>
-            {{ form_end(form) }}
-        </div>
+        
+        {% if question.comments is not empty %}
+            <div class="separator"></div>
+            
+        {% endif %}
+        
+        {% if form is defined %}
+            <div class="separator"></div>
+            <div class="pb-20">
+                <h4>Nombre de réponses : {{ question.nbResponse }}</h4>
+            </div>
+            <h3 class="pb-20">Votre réponse: </h3>
+            <div class="comment-form">
+                {{ form_start(form) }}
+                    {{ form_rest(form) }}
+                    <button class="btn btn-primary m-10">Soumettre</button>
+                {{ form_end(form) }}
+            </div>
+        {% endif %}
 
         {% for comment in question.comments %}
-        <div class="question-response-elem d-flex flex-row-nowrap mn-20">
-                {% include "./partials/_rating.html.twig"  with {rating:comment.rating, from:'comment', id: comment.id} %}
+            <div class="question-response-elem d-flex flex-row-nowrap mb-20">
+                {% include "./partials/_rating.html.twig" with { rating: comment.rating, from: 'comment', id: comment.id } %}
                 <div class="d-flex flex-column w-100">
-                    <div class="d-flex flex-row-nowrap align-items-center pb-10 ">
-                        <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="avatar" class="avatar-small mr-10">
-    
-                        <p class="clickable">Roberta Carlson</p>
+                    <div class="d-flex flex-row-nowrap align-items-center pb-10">
+                        <a class="d-flex flex-row-nowrap " href="{{ path('profile_user', {id: comment.author.id}) }}">
+                            <img src="{{comment.author.image}}" alt="avatar" class="avatar-small mr-10">
+                            <p class="clickable flex-fill">{{comment.author.fullname}}</p>
+                        </a>
                         <span class="ml-auto">{{ comment.createdAt | ago(locale= 'fr') }}</span>
                     </div>
                     <p class="question-response-text">{{ comment.content }}</p>
                 </div>
             </div>
-            
         {% endfor %}
     </div>
     
