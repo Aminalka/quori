@@ -20,7 +20,7 @@ class UserType extends AbstractType
             ->add('lastname',TextType::class,['label'=>'Nom*','required' => false])
             ->add('email',EmailType::class,['label'=>'Email*','required' => false])
             ->add('password', PasswordType::class, ['label'=>'Mot de passe*','required' => false])
-            ->add('image',UrlType::class, ['label' => 'Image de profil'])
+            ->add('image',UrlType::class, ['label' => 'Image de profil','required' => false])
         ;
     }
 
