@@ -2,15 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use App\Entity\Vote;
+use App\Entity\Comment;
 use App\Repository\VoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends AbstractController
 {
@@ -20,7 +20,7 @@ class CommentController extends AbstractController
     {
         $currentUser = $this->getUser();
 
-        // je verifie que le current user n'est pas le proprietaire de la question
+        // je verifie que le current user n'est pas le proprietaire de la réponse
         if($currentUser !== $comment->getAuthor()) {
 
             // on verifie que le current user a deja voter
@@ -30,8 +30,8 @@ class CommentController extends AbstractController
             ]);
 
             if($vote) {
-                // s'il avait aimer la question et qu'il reclique sur le like c'est pour enlever son vote
-                // s'il n'avait pas aimer la question et qu'il reclique sur le dislike c'est pour enlever son vote
+                // s'il avait aimer la réponse et qu'il reclique sur le like c'est pour enlever son vote
+                // s'il n'avait pas aimer la réponse et qu'il reclique sur le dislike c'est pour enlever son vote
                 if(($vote->getIsLiked() && $score > 0) || (!$vote->getIsLiked() && $score < 0)) {
                     // on supprime le vote
                     $em->remove($vote);

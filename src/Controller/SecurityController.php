@@ -11,11 +11,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class SecurityController extends AbstractController
 {
+
+    function __construct(private $formLoginAuthenticator)
+    {
+        
+    }
+
     #[Route('/signup', name: 'signup')]
-    public function signup(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): Response
+    public function signup(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em, UserAuthenticatorInterface $userAuthenticator): Response
     {
         $user = new User();
         $signupForm = $this->createForm(UserType::class, $user);
@@ -28,7 +35,10 @@ class SecurityController extends AbstractController
             $em->persist($user);
             $em->flush();
 
-            return $this->redirectToRoute('signin');
+            $this->addFlash('success', 'Bienvenue sur quori !');
+            return $userAuthenticator->authenticateUser($user, $this->formLoginAuthenticator,$request);
+
+
         }
 
         return $this->render('security/signup.html.twig', ['form' => $signupForm->createView()]);
