@@ -7,6 +7,7 @@ use App\Entity\Question;
 use App\Entity\Vote;
 use App\Form\CommentType;
 use App\Form\QuestionType;
+use App\Repository\QuestionRepository;
 use App\Repository\VoteRepository;
 use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,43 +47,45 @@ class QuestionController extends AbstractController
     }
 
     #[Route('/question/{id}', name: 'show_question')]
-    public function show(Request $request, Question $question, EntityManagerInterface $em)
+    public function show(int $id, Request $request, QuestionRepository $questionRepository, EntityManagerInterface $em)
     {
 
         $user=$this->getUser();
+        $question = $questionRepository->findQuestionWithAllCommentsAndAuthors($id);
 
-        $options = [
-            'question' => $question
-        ];
+        if ($question) {
+            $options = [
+                'question' => $question
+            ];
+    
+            if ($user) {
+                $comment = new Comment();
+                $commentForm = $this->createForm(CommentType::class, $comment);
+                $commentForm->handleRequest($request);
+        
+                if($commentForm->isSubmitted() && $commentForm->isValid()){
+                    $comment->setCreatedAt(new \DateTimeImmutable());
+                    $comment->setRating(0);
+                    $comment->setQuestion($question);
+                    $comment->setAuthor($user);
+        
+                    $question->setNbResponse($question->getNbResponse() + 1);
+        
+                    $em->persist($comment);
+                    $em->flush();
+        
+                    $this->addFlash('success', 'Votre message a bien été publié');
+        
+                    return $this->redirect($request->getUri());
+                }
+    
+                $options['form'] = $commentForm->createView();
+            } 
+            return $this->render('/question/show.html.twig', $options);
 
-        if ($user) {
-            $comment = new Comment();
-            $commentForm = $this->createForm(CommentType::class, $comment);
-            $commentForm->handleRequest($request);
-    
-            if($commentForm->isSubmitted() && $commentForm->isValid()){
-                $comment->setCreatedAt(new \DateTimeImmutable());
-                $comment->setRating(0);
-                $comment->setQuestion($question);
-                $comment->setAuthor($user);
-    
-                $question->setNbResponse($question->getNbResponse() + 1);
-    
-                $em->persist($comment);
-                $em->flush();
-    
-                $this->addFlash('success', 'Votre message a bien été publié');
-    
-                return $this->redirect($request->getUri());
-            }
-
-            $options['form'] = $commentForm->createView();
         }
+        return $this->redirectToRoute('home');
 
-      
-       
-
-        return $this->render('/question/show.html.twig', $options);
     }
 
     #[Route('/question/rating/{id}/{score}', name: 'question_rating')]

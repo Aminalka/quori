@@ -39,6 +39,31 @@ class QuestionRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllQuestionsWithAuthors(){
+        return $this->createQueryBuilder('q')
+                    ->join('q.author', 'a')
+                    ->addSelect('a')
+                    ->orderBy('q.createdAt','DESC')
+                    ->getQuery()
+                    ->getResult();
+    }
+
+
+    public function findQuestionWithAllCommentsAndAuthors(int $id){
+        return $this->createQueryBuilder('q')
+                    ->where('q.id = :id')
+                    ->setParameter('id', $id)
+                    ->join('q.author', 'a')
+                    ->addSelect('a')
+                    ->leftJoin('q.comments', 'c')
+                    ->addSelect('c')
+                    ->orderBy('c.createdAt', 'DESC')
+                    ->join('c.author', 'ca')
+                    ->addSelect('ca')
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
 //    /**
 //     * @return Question[] Returns an array of Question objects
 //     */
