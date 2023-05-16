@@ -126,7 +126,7 @@ class SecurityController extends AbstractController
 
                 $resetPassword = new ResetPassword();
                 $resetPassword->setUser($user)
-                                ->setToken($token)
+                                ->setToken(sha1($token))
                                 ->setExpiredAt(new DateTimeImmutable('+2 hours'));
 
                 $em->persist($resetPassword);
@@ -167,7 +167,7 @@ class SecurityController extends AbstractController
         }
 
         // verifier que le token est bien dans la base de données 
-        $resetPassword = $resetPasswordRepository->findOneBy(['token' => $token]);
+        $resetPassword = $resetPasswordRepository->findOneBy(['token' => sha1($token)]);
         // verifier qu'il n'a pas expiré 
         if(!$resetPassword || $resetPassword->getExpiredAt()< new DateTime('now')){
 
@@ -217,4 +217,6 @@ class SecurityController extends AbstractController
         return $this->render('security/reset-password-form.html.twig', ['form' => $resetPasswordForm->createView()]);
         
     }
+
+
 }
