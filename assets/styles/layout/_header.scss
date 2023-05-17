@@ -1,0 +1,24 @@
+/* HEADER */
+
+header{
+    box-shadow: var(--box-shadow);
+}
+
+.header-logo{
+    max-width: 150px;
+}
+.header-logo img{
+    max-width: 150px;
+}
+
+.header-search {
+    border-radius: var(--border-radius);
+    background-color: var(--gray-light);
+    max-width: 400px;
+}
+
+.header-search input{
+    border: none;
+    outline: none;
+    background-color: var(--gray-light);
+}
