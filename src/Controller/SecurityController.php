@@ -51,7 +51,7 @@ class SecurityController extends AbstractController
                
                 $user->setImage($uploaderPicture->uploadProfileImage($picture));  
             }else{
-                $user->setImage("/images/default_profile.png");
+                $user->setImage("/profiles/default_profile.png");
             }
 
             $em->persist($user);
