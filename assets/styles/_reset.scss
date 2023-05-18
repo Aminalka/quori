@@ -19,11 +19,13 @@ h1,h2,h3,h4,h5 {
 a{
     color: inherit;
     text-decoration: none;
+
+    &:hover{
+        opacity: .8;
+    }
+    
 }
 
-a:hover{
-    opacity: .8;
-}
 
 ul {
     list-style: none;
