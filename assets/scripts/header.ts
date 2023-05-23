@@ -2,7 +2,7 @@ const burgerBtn = document.querySelector('.burger');
 const menu = document.querySelector('.menu-xs');
 const appContentContainer = document.querySelector('.app-content');
 
-burgerBtn.addEventListener('click', (event: MouseEvent) => {
+burgerBtn.addEventListener('click', (event: MouseEvent) =>{
     console.log('menu xs');
     menu.classList.toggle('hidden');
 })
